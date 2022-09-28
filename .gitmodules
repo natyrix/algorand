@@ -1,0 +1,4 @@
+[submodule "algorand_front_end"]
+	path = algorand_front_end
+	url = https://github.com/natyrix/algorand_front_end
+	branch = main
