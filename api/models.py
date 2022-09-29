@@ -9,6 +9,7 @@ class Account(models.Model):
     address = models.CharField(max_length=255)
     has_requested = models.BooleanField(default=False)
     request_status = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
 
 class Assets(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
