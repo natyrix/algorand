@@ -1,9 +1,10 @@
+from distutils.command.upload import upload
 from django.shortcuts import render
 import json
 # Create your views here.
 from django.http import JsonResponse
-from api.models import Account
-
+from api.models import Account, Assets
+from django.core.files.storage import FileSystemStorage
 
 def index(request):
     return JsonResponse({'success':True})
@@ -18,6 +19,7 @@ def check_account(request):
                 address = str(address).strip()
                 fetched_account = Account.objects.filter(address=address)
                 if fetched_account:
+                    fetched_account = fetched_account.first()
                     return JsonResponse({
                         'success':True,
                         'account': {
@@ -73,4 +75,105 @@ def create_account(request):
             return JsonResponse({'success':False,'message':f'method {request.method} not allowed'})
     except Exception as e:
         return JsonResponse({'success':False,'message':str(e)})
+
+
+def file_upload_and_save_asset(request):
+    try:
+        if request.method == 'POST':
+            myfile = request.FILES['file']
+            address = request.POST.get('address')
+            asset_id = request.POST.get('asset_id')
+            print("VALUES")
+            print(myfile)
+            print(asset_id)
+            print(address)
+            fs = FileSystemStorage()
+            file_name = fs.save(myfile.name, myfile)
+            uploaded_file_url = fs.url(file_name)
+            account = Account.objects.filter(address=address)
+            if address and asset_id:
+                if account.first():
+                    asset_obj = Assets.objects.create(account=account.first(), asset_index=asset_id, image_url=uploaded_file_url)
+                    if asset_obj:
+                        return JsonResponse({
+                            'success':True,
+                            "asset":{
+                                "id": asset_obj.id,
+                                "asset_index": asset_obj.asset_index,
+                                "account": asset_obj.account.address,
+                                "image_url": asset_obj.image_url,
+                            },
+                            'message':"Uploaded"
+                        })
+                    else:
+                        return JsonResponse({'success':False,'message':"File upload failed"})
+                else:
+                    return JsonResponse({'success':False,'message':"Account not found"})
+            else:
+                return JsonResponse({'success':False,'message':"All fields are required"})
+        else:
+            return JsonResponse({'success':False,'message':f'method {request.method} not allowed'})
+        
+    except Exception as e:
+        return JsonResponse({'success':False,'message':str(e)})
+
+
+def set_asset_index(request):
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            asset_id = data.get('asset_id')
+            asset_index = data.get('asset_index')
+            if asset_id and asset_index:
+                asset = Assets.objects.filter(id=int(asset_id))
+                if asset.first():
+                    asset = asset.first()
+                    asset.asset_index = asset_index
+                    asset.save()
+                    return JsonResponse({'success':True,'message':'Updated'})
+                else:
+                    return JsonResponse({'success':False,'message':'Asset not found'})
+            else:
+                return JsonResponse({'success':False,'message':'All fields are required'})
+        else:
+            return JsonResponse({'success':False,'message':f'method {request.method} not allowed'})
+    except Exception as e:
+        return JsonResponse({'success':False,'message':str(e)})
+
+
+
+def get_all_requests(request):
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            address = data.get('address')
+            if address:
+                address = str(address).strip()
+                fetched_account = Account.objects.filter(address=address)
+                if fetched_account and fetched_account[0].is_admin:
+                    acounts_list = Account.objects.filter(has_requested=True, request_status=False, is_admin=False)
+                    ls = []
+                    for acc in acounts_list:
+                        ls.append({
+                            'address': acc.address,
+                            'first_name': acc.first_name,
+                            'last_name': acc.last_name,
+                            'is_admin': acc.is_admin,
+                            'request_status': acc.request_status,
+                            'has_requested': acc.has_requested,
+                        })
+                    return JsonResponse({
+                        'success': True,
+                        'account_list': ls
+                    })
+                    
+                else:
+                    return JsonResponse({'success':False,'message':'Account not found' if not fetched_account else 'Access Denied'})
+            else:
+                return JsonResponse({'success':False,'message':'All fields are required'})
+        else:
+            return JsonResponse({'success':False,'message':f'method {request.method} not allowed'})
+    except Exception as e:
+        return JsonResponse({'success':False,'message':str(e)})
+
 

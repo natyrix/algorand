@@ -11,7 +11,14 @@ class Account(models.Model):
     request_status = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
+    def __str__(self):
+       return self.first_name +" "+ self.last_name
+
 class Assets(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     asset_index = models.CharField(max_length=255)
     asset_status = models.BooleanField(default=False)
+    image_url = models.CharField(max_length=255, default="None")
+
+    # def __str__(self):
+    #    return self.first_name + self.last_name
