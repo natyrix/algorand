@@ -155,6 +155,7 @@ def get_all_requests(request):
                     ls = []
                     for acc in acounts_list:
                         ls.append({
+                            'id':acc.id,
                             'address': acc.address,
                             'first_name': acc.first_name,
                             'last_name': acc.last_name,
@@ -177,3 +178,87 @@ def get_all_requests(request):
         return JsonResponse({'success':False,'message':str(e)})
 
 
+
+def get_all_assets(request):
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            address = data.get('address')
+            if address:
+                address = str(address).strip()
+                fetched_account = Account.objects.filter(address=address)
+                if fetched_account and fetched_account[0].is_admin:
+                    assets = Assets.objects.all()
+                    ls = []
+                    for asset in assets:
+                        ls.append({
+                            'id': asset.id,
+                            'asset_index':asset.asset_index,
+                            'asset_status':asset.asset_status,
+                            'image_url':f"http://127.0.0.1:8000{asset.image_url}",
+                            'account':{
+                                'id':asset.account.id,
+                                'address': asset.account.address,
+                                'first_name': asset.account.first_name,
+                                'last_name': asset.account.last_name,
+                                'is_admin': asset.account.is_admin,
+                                'request_status': asset.account.request_status,
+                                'has_requested': asset.account.has_requested,
+                            }
+                        })
+                    return JsonResponse({
+                        'success': True,
+                        'asset_list': ls
+                    })
+                    
+                else:
+                    return JsonResponse({'success':False,'message':'Account not found' if not fetched_account else 'Access Denied'})
+            else:
+                return JsonResponse({'success':False,'message':'All fields are required'})
+        else:
+            return JsonResponse({'success':False,'message':f'method {request.method} not allowed'})
+    except Exception as e:
+        return JsonResponse({'success':False,'message':str(e)})
+
+
+def get_assets_trainee(request):
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            address = data.get('address')
+            if address:
+                address = str(address).strip()
+                fetched_account = Account.objects.filter(address=address)
+                if fetched_account:
+                    fetched_account = fetched_account.first()
+                    assets = Assets.objects.filter(account=fetched_account)
+                    ls = []
+                    for asset in assets:
+                        ls.append({
+                            'id': asset.id,
+                            'asset_index':asset.asset_index,
+                            'asset_status':asset.asset_status,
+                            'image_url':f"http://127.0.0.1:8000{asset.image_url}",
+                            'account':{
+                                'id':asset.account.id,
+                                'address': asset.account.address,
+                                'first_name': asset.account.first_name,
+                                'last_name': asset.account.last_name,
+                                'is_admin': asset.account.is_admin,
+                                'request_status': asset.account.request_status,
+                                'has_requested': asset.account.has_requested,
+                            }
+                        })
+                    return JsonResponse({
+                        'success': True,
+                        'asset_list': ls
+                    })
+                    
+                else:
+                    return JsonResponse({'success':False,'message':'Account not found'})
+            else:
+                return JsonResponse({'success':False,'message':'All fields are required'})
+        else:
+            return JsonResponse({'success':False,'message':f'method {request.method} not allowed'})
+    except Exception as e:
+        return JsonResponse({'success':False,'message':str(e)})

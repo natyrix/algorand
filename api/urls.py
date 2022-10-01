@@ -8,4 +8,6 @@ urlpatterns = [
     path('file_upload_and_save_asset', views.file_upload_and_save_asset, name='file_upload_and_save_asset'),
     path('set_asset_index', views.set_asset_index, name='set_asset_index'),
     path('get_all_requests', views.get_all_requests, name='get_all_requests'),
+    path('get_all_assets', views.get_all_assets, name='get_all_assets'),
+    path('get_assets_trainee', views.get_assets_trainee, name='get_assets_trainee'),
 ]
