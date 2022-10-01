@@ -197,7 +197,7 @@ def get_all_assets(request):
                             'id': asset.id,
                             'asset_index':asset.asset_index,
                             'asset_status':asset.asset_status,
-                            'image_url':f"http://127.0.0.1:8000{asset.image_url}",
+                            'image_url':f"http://localhost:8000{asset.image_url}",
                             'account':{
                                 'id':asset.account.id,
                                 'address': asset.account.address,

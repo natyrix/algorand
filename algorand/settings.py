@@ -28,6 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = (
     '127.0.0.1',
     'localhost',
+    'algorand-endpoint.herokuapp.com'
 )
 
 CORS_ORIGIN_ALLOW_ALL = True
