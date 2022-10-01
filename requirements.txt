@@ -2,7 +2,7 @@ asgiref==3.5.2
 asttokens==2.0.8
 attrs==22.1.0
 backcall==0.2.0
-beaker-pyteal==0.2.1
+beaker-pyteal
 cffi==1.15.1
 debugpy==1.6.3
 decorator==5.1.1
