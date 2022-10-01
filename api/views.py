@@ -129,6 +129,8 @@ def set_asset_index(request):
                 if asset.first():
                     asset = asset.first()
                     asset.asset_index = asset_index
+                    asset.account.request_status=True
+                    asset.account.save()
                     asset.save()
                     return JsonResponse({'success':True,'message':'Updated'})
                 else:
@@ -188,7 +190,7 @@ def get_all_assets(request):
                 address = str(address).strip()
                 fetched_account = Account.objects.filter(address=address)
                 if fetched_account and fetched_account[0].is_admin:
-                    assets = Assets.objects.all()
+                    assets = Assets.objects.all().order_by('-id')
                     ls = []
                     for asset in assets:
                         ls.append({
