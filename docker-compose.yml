@@ -1,0 +1,6 @@
+services:
+  django:
+    container_name: "Algorand Backend"
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
