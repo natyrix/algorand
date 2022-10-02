@@ -15,6 +15,7 @@ End-to-End Web3 dApps: certificate generation, distribution, and value transfer 
     - [scripts](#scripts)
     - [tests](#tests)
     - [root folder](#root-folder)
+  - [Installation guide](#Installation-guide)
 
 ***
 
@@ -55,6 +56,7 @@ The repository has a number of files including python scripts, jupyter notebooks
 - `requirements.txt`: a text file lsiting the projet's dependancies
 - `.gitignore`: a text file listing files and folders to be ignored
 - `README.md`: Markdown text with a brief explanation of the project and the repository structure.
+- `.teal`: Compiled teal files of a smart contract written using pyteal.
 
 
 ***
@@ -62,6 +64,28 @@ The repository has a number of files including python scripts, jupyter notebooks
 ![Alt text](explorer_img_3.png?raw=true "Tech stack")
 
 ***
+
+### scripts
+- `helpers.py`: helper functions for the smart contract
+- `contracts.py`: smart contract for splitting funds transaction
+
+
+## Installation guide
+Django Server
+```
+git clone https://github.com/natyrix/algorand
+cd algorand
+pip install -r requirements.txt 
+python manage.py migrate
+python manage.py runserver
+```
+React Frontend
+```
+git clone https://github.com/natyrix/algorand
+cd algorand_front_end
+npm install
+npm start
+```
 
 ***
 
