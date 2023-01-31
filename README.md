@@ -81,7 +81,7 @@ python manage.py runserver
 ```
 React Frontend
 ```
-git clone https://github.com/natyrix/algorand
+git clone https://github.com/natyrix/algorand_front_end
 cd algorand_front_end
 npm install
 npm start
